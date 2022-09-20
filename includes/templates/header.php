@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,6 +8,7 @@
     <title>Bines Raices</title>
     <link rel="stylesheet" href="/build/css/app.css">
 </head>
+
 <body>
     <header class="header <?php echo $inicio ? 'inicio' : '' ?>">
         <div class="contenedor contenido-header">
@@ -26,5 +28,10 @@
                         <a href="contacto.php">Contacto</a>
                     </nav>
                 </div>
-            </div>        
+            </div>
+            <?php
+                    echo $inicio ? "<h1>Ventas de Casas y Departamentos Exclusivos de Lujos</h1>" : "";
+                    
+                ?>
+        </div>
     </header>
