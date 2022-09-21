@@ -1,5 +1,10 @@
 <?php
-
+    require '../../includes/funciones.php';
+    
+    $auth = estarAutenticado();
+    if(!$auth){
+        header('Location:/');
+    }
     $id= $_GET['id'];
     $id = filter_var($id,FILTER_VALIDATE_INT);
 
@@ -96,7 +101,6 @@
         }
     }
 
-    require '../../includes/funciones.php';
     incluirTemplates('header');
 ?>
     <main class="contenedor seccion">

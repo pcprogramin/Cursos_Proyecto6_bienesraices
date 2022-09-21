@@ -1,5 +1,10 @@
 <?php
     require '../../includes/funciones.php';
+    
+    $auth = estarAutenticado();
+    if(!$auth){
+        header('Location:/');
+    }
     incluirTemplates('header');
 ?>
     <main class="contenedor seccion">
