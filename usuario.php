@@ -1,6 +1,6 @@
 <?php
 ini_set('display_errors', 1);
-require 'includes/config/database.php';
+require 'includes/config/app.php';
 $db = conectarDB();
 
 

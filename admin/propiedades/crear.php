@@ -1,12 +1,11 @@
 <?php
-    require '../../includes/funciones.php';
-    
-    $auth = estarAutenticado();
-    if(!$auth){
-        header('Location:/');
-    }
-    require '../../includes/config/database.php';
+    require '../../includes/app.php';
+    ini_set('display_errors', 1);
 
+    use App\Propiedad;
+    
+    estarAutenticado();
+    
     $db = conectarDB();
 
     $consulta = "SELECT * FROM vendedores";
@@ -22,22 +21,8 @@
     $estacionamiento = '';
     $vendedorId = '';
     if ( $_SERVER['REQUEST_METHOD'] === 'POST' ){
-        // echo "<pre>";
-        // var_dump($_FILES);
-        // echo"</pre>";
-        // exit;
-        $titulo = mysqli_real_escape_string($db,$_POST['titulo']);
-        $precio = mysqli_real_escape_string($db,$_POST['precio']);
-        $descripcion = mysqli_real_escape_string($db,$_POST ['descripcion']);
-        $habitaciones = mysqli_real_escape_string($db,$_POST ['habitaciones']);
-        $wc = mysqli_real_escape_string($db,$_POST ['wc']);
-        $estacionamiento = mysqli_real_escape_string($db,$_POST['estacionamiento']);
-        $vendedorId = mysqli_real_escape_string($db,$_POST['vendedorId']);
-        $creado = date('Y/m/d');
-        $imagen=$_FILES['imagen'];
-
-        
-       
+        $propiedad = new Propiedad($_POST);
+        $propiedad->guardar();
         if(!$titulo){
             $errores [] ="Debes añadir un titulo";
         }
@@ -84,8 +69,7 @@
             $nombreImagen = md5(uniqid(rand(),true)).".jpg";
             move_uploaded_file($imagen['tmp_name'],$carpetaImagenes . $nombreImagen );
 
-            $query = " INSERT INTO propiedades (titulo,precio,imagen,descripcion,habitaciones,wc,estacionamiento,creado,vendedorId)
-            VALUES ('${titulo}','${precio}','${nombreImagen}','${descripcion}','${habitaciones}','${wc}','${estacionamiento}','${creado}','${vendedorId}')";
+           
    
            $resultado = mysqli_query($db,$query);
    

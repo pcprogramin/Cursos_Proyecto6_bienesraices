@@ -6,7 +6,7 @@ ini_set('error_reporting', E_ALL);
     if (!$id){
         header("Location:/");
     }
-    require ('includes\config\database.php');
+    require 'includes/app.php';
     $db = conectarDB();
    
     $query = "SELECT * FROM propiedades  WHERE id = ${id}";
@@ -18,7 +18,7 @@ ini_set('error_reporting', E_ALL);
     }
     
     $propiedad = mysqli_fetch_assoc($resultado);
-    require 'includes/funciones.php';
+
     incluirTemplates('header');
 
 ?>
