@@ -3,7 +3,8 @@
     ini_set('display_errors', 1);
 
     use App\Propiedad;
-    
+    use Intervention\Image\ImageManagerStatic as Image;
+
     estarAutenticado();
     
     $db = conectarDB();
@@ -12,7 +13,8 @@
 
     $vendedores = mysqli_query($db,$consulta);
 
-    $errores = [];
+    $errores = Propiedad::getErrores();
+
     $titulo = '';
     $precio = '';
     $descripcion = '';
@@ -21,58 +23,25 @@
     $estacionamiento = '';
     $vendedorId = '';
     if ( $_SERVER['REQUEST_METHOD'] === 'POST' ){
+
         $propiedad = new Propiedad($_POST);
-        $propiedad->guardar();
-        if(!$titulo){
-            $errores [] ="Debes añadir un titulo";
-        }
+        
+        
+        $nombreImagen = md5(uniqid(rand(),true)).".jpg";
 
-        if(!$precio){
-            $errores [] ="Debes añadir un precio";
+        if ($_FILES['imagen']['tmp_name']){
+            $image =Image::make($_FILES['imagen']['tmp_name'])->fit(800,600);
+            $propiedad ->setImagen($nombreImagen);
         }
-
-        if(strlen($descripcion) < 50){
-            $errores [] ="La descripcion es obligatoria y tiene que tener 50 caracteres";
-        }
-
-        if(!$habitaciones){
-            $errores [] ="Debes añadir las habitaciones";
-        }
-
-        if(!$wc){
-            $errores [] ="Debes añadir los baños";
-        }
-
-        if(!$estacionamiento){
-            $errores [] ="Debes añadir los estacionamiento";
-        }
-        if (empty($vendedorId)){
-            $errores [] ="Debes seleccionar un vendedor";
-        }
-        if(!$imagen['name'] || $imagen['error']){
-            $errores[] = "Debes añadir una imagen";
-        }
-
-        $medida=1000*1000;
-        if($imagen['size']>$medida){
-            $errores[] = "La imagen es muy pesada";
-        }
+        $errores = $propiedad->validar();
+        
         //Insertar en la Base de Datos
         if(empty($errores)){
-
-            $carpetaImagenes='../../imagenes/';
-
-            if(!is_dir($carpetaImagenes)){
-                mkdir($carpetaImagenes);
+            if (!is_dir(CARPETA_IMAGENES)){
+                mkdir(CARPETA_IMAGENES);
             }
-            
-            $nombreImagen = md5(uniqid(rand(),true)).".jpg";
-            move_uploaded_file($imagen['tmp_name'],$carpetaImagenes . $nombreImagen );
-
-           
-   
-           $resultado = mysqli_query($db,$query);
-   
+            $image->save(CARPETA_IMAGENES.$nombreImagen);
+            $resultado=$propiedad->guardar();
            if ($resultado){
                header("Location:/admin?resultado=1");
            }
