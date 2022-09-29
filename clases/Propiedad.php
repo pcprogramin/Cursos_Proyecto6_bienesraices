@@ -31,7 +31,7 @@
             $this->wc = $args["wc"] ?? '';
             $this->estacionamiento = $args["estacionamiento"] ?? '';
             $this->creado = date ('Y/m/d');
-            $this->vendedorId = $args["vendedorId"] ?? '';
+            $this->vendedorId = $args["vendedorId"] ?? 1;
         }
 
         public function guardar () {
@@ -107,5 +107,41 @@
             }
     
             return self::$errores;
+        }
+        public static function all (){
+            $query  = "SELECT * FROM propiedades";
+            $resultado = self::consultaSQL($query);
+            return $resultado;
+        }
+        public static function find ($id){
+            $query  = "SELECT * FROM propiedades WHERE id=${id}";
+            $resultado = self::consultaSQL($query);
+            return array_shift($resultado);
+        }
+        public static function consultaSQL($query){
+            $resultado =self::$db->query($query);
+            $array=[];
+            while($registro=$resultado->fetch_assoc()){
+                $array[]= self::crearObjeto($registro);
+            }
+            $resultado->free();
+            return $array;
+        }
+        protected static function crearObjeto($registro){
+            $objeto = new self;
+            foreach ($registro as $key => $value){
+                if(property_exists($objeto,$key)){
+                    $objeto->$key=$value;
+                }
+            }
+            return $objeto;
+        }
+
+        public function sincronizar ($arg=[]){
+            foreach($arg as $key=>$value){
+                if(property_exists($this,$key) && is_null($value)){
+                    $this->$key = $value;
+                }
+            }
         }
     }
