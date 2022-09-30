@@ -18,7 +18,7 @@
     $propiedad = new Propiedad;
     if ( $_SERVER['REQUEST_METHOD'] === 'POST' ){
 
-        $propiedad = new Propiedad($_POST['propiedad']);
+        $propiedad = new Propiedad();
         
         
         $nombreImagen = md5(uniqid(rand(),true)).".jpg";

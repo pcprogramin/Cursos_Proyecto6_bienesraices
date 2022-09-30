@@ -34,7 +34,16 @@
             $this->vendedorId = $args["vendedorId"] ?? 1;
         }
 
-        public function guardar () {
+        public function guardar(){
+            debuger(($this->id));
+            if(isset($this->id)){
+                $this->actualizar();
+            }else{
+                $this->crear();
+            }
+        }
+
+        public function crear () {
 
             $atributos = $this->sanitizarAtributos();
             $query = " INSERT INTO propiedades (";
@@ -43,8 +52,32 @@
             $query .= join("','",array_values($atributos));
             $query .= " ')";
             $resultado = self::$db->query($query);
-            
+            debuger($query);
             return $resultado;
+        }
+        public function actualizar (){
+            $atributos =$this->sanitizarAtributos();
+            $valores =[];
+            foreach($atributos as $key=>$value){
+                $valores[]="${key}='${value}'";
+            }
+            $query = "UPDATE propiedades SET ";
+            $query.=  join(',',$valores);
+            $query.=" WHERE id= '".self::$db->escape_string($this->id). "'";
+            $query.=" LIMIT 1";
+
+            $resultado = self::$db->query($query);
+            if ($resultado){
+                header("Location:/admin?resultado=2");
+            }
+        }
+        public function eliminar (){
+            $query="DELETE FROM propiedades WHERE id=".self::$db->escape_string($this->id)." LIMIT 1";
+            $resultado = self::$db->query($query);
+            if ($resultado){
+                $this->borrarImagen();
+                header("Location:/admin?resultado=3");
+            }
         }
        // Identificar y unir los atributos de la DB
         public function atributos(){
@@ -66,11 +99,20 @@
         }
 
         public function setImagen ($imagen){
+            if(isset($this->id)){
+                debuger("entro");
+                $this->borrarImagen();
+            }
             if($imagen){
                 $this->imagen=$imagen;
             }
         }
-
+        public function borrarImagen(){
+            $existeArchivo=file_exists(CARPETA_IMAGENES . $this->imagen);
+            if($existeArchivo){
+                unlink(CARPETA_IMAGENES . $this->imagen);
+            }
+        }
         public static function getErrores(){
 
             return self::$errores;
@@ -139,9 +181,10 @@
 
         public function sincronizar ($arg=[]){
             foreach($arg as $key=>$value){
-                if(property_exists($this,$key) && is_null($value)){
+                if(property_exists($this,$key) && !is_null($value)){
                     $this->$key = $value;
                 }
-            }
+            } 
         }
+
     }

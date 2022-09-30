@@ -6,7 +6,7 @@
     <input type="number" id="precio" name="propiedad[precio]" placeholder="Precio Propiedad" value="<?php echo s($propiedad->precio) ?>">
 
     <label for="imgenes">Imagen:</label>
-    <input type="file" id="imagenes" name="propiedad[imagen]" accept='image/jpeg, image/png'>
+    <input type="file" id="imagenes" value="<?php echo s($propiedad->imagen) ?>" name="propiedad[imagen]" accept='image/jpeg, image/png'>
     <?php if($propiedad->imagen){?>
         <img src="/imagenes/<?php echo $propiedad->imagen?>" class="imagen-small">
     <?php } ?>
