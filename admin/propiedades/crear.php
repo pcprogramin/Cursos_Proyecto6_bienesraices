@@ -3,22 +3,20 @@
     ini_set('display_errors', 1);
 
     use App\Propiedad;
+    use App\Vendedor;
     use Intervention\Image\ImageManagerStatic as Image;
 
     estarAutenticado();
-    
-    $db = conectarDB();
 
-    $consulta = "SELECT * FROM vendedores";
+    $propiedad = new Propiedad;
 
-    $vendedores = mysqli_query($db,$consulta);
+    $vendedores= Vendedor::all();
 
     $errores = Propiedad::getErrores();
 
-    $propiedad = new Propiedad;
     if ( $_SERVER['REQUEST_METHOD'] === 'POST' ){
 
-        $propiedad = new Propiedad();
+        $propiedad = new Propiedad($_POST['propiedad']);
         
         
         $nombreImagen = md5(uniqid(rand(),true)).".jpg";
