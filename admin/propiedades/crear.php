@@ -1,6 +1,5 @@
 <?php
     require '../../includes/app.php';
-    ini_set('display_errors', 1);
 
     use App\Propiedad;
     use App\Vendedor;
