@@ -4,13 +4,25 @@ require '../../includes/app.php';
 use App\Vendedor;
 
 estarAutenticado();
-$vendedor = new Vendedor;
+
+$id = $_GET['id'];
+$id = filter_var($id,FILTER_VALIDATE_INT);
+if(!$id){
+    header('Location: /admin');
+}
+
+$vendedor= Vendedor::find($id);
 
 $errores = Vendedor::getErrores();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $vendedor->sincronizar($_POST['vendedor']);
+    $errores=$vendedor->validar();
+    if (empty($errores)) {
+        $vendedor->guardar();
+    }
 }
-if (empty($errores)) {
-}
+
 incluirTemplates('header');
 ?>
 <main class="contenedor seccion">
