@@ -105,6 +105,11 @@ class ActiveRecord {
         $resultado = self::consultaSQL($query);
         return $resultado;
     }
+    public static function get ($cantidad){
+        $query  = "SELECT * FROM ".static::$tabla." LIMIT ".$cantidad;
+        $resultado = self::consultaSQL($query);
+        return $resultado;
+    }
     public static function find ($id){
         $query  = "SELECT * FROM ".static::$tabla." WHERE id=${id}";
         $resultado = self::consultaSQL($query);
